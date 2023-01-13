@@ -1,0 +1,6 @@
+addons/*
+addons.*
+instances/*
+odoo.conf
+.env
+stack_*.sh

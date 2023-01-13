@@ -1,0 +1,58 @@
+# Environment variables for the app on Odoo server
+## docker-compose stack name (is automatically set):
+COMPOSE_PROJECT_NAME=#INSTANCE#
+
+# ODOO traefik links
+ODOO_URL=hr.wizzfinancial.com
+
+# Odoo version suffix is added to container names:
+ODOO_VER=16
+
+# =====================================
+# Folders:
+
+# Full path where all odoo addons are stored (is automatically set):
+ODOO_ADDONS=#ADDONS#
+
+# Full path where odoo logs should be stored (is automatically set):
+ODOO_LOG=#LOG#
+
+# Full path where odoo config should be generated (is automatically set):
+ODOO_CONFIG=#CONFIG#
+
+# =====================================
+# Odoo command line parameters (may be required for maintenance works):
+#ODOO_COMMAND=odoo -d <dbname> --update all --stop-after-init --load=base,web,openupgrade_framework
+#ODOO_COMMAND=odoo -d demo -u all
+
+# =====================================
+# Image name of Odoo (all tags are here: https://hub.docker.com/r/vmelnych/odoo/tags):
+# You can make your own builds here: https://github.com/vmelnych/odoo_docker_build
+ODOO_IMAGE=vmremote/odoo:16.20230110
+ODOO_WEB_PORT=80
+
+# =====================================
+# Odoo db user and password (is automatically set)
+POSTGRES_IMAGE=postgres:13
+POSTGRES_PASSWORD="#POSTGRES_PASSWORD#"
+POSTGRES_USER=odoo
+
+# =====================================
+# PGAdmin is not started by default. The password is automatically set.
+PGADMIN_IMAGE=dpage/pgadmin4:latest
+PGADMIN_PASSWORD="#PGADMIN_PASSWORD#"
+PGADMIN_WEB_PORT=6015
+PGADMIN_URL=pga.wizzfinancial.com
+
+## PGAdmin login email (must be your email address):
+PGADMIN_EMAIL=odoo@pgadmin.email
+
+# =====================================
+# Metabase environment by default is not started. Secret key is automatically set.
+MB_IMAGE=metabase/metabase
+MB_URL=bi.wizzfinancial.com
+MB_WEB_PORT=8100
+#MB_DB_NAME=metabase
+#MB_DB_PORT=5432
+MB_JAVA_TIMEZONE=Europe/Berlin
+MB_ENCRYPTION_SECRET_KEY="#METABASE_SECRET#"
