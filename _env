@@ -1,9 +1,9 @@
 # Environment variables for the app on Odoo server
 ## docker-compose stack name (is automatically set):
-COMPOSE_PROJECT_NAME=#INSTANCE#
+COMPOSE_PROJECT_NAME=#COMPOSE_PROJECT_NAME#
 
 # ODOO traefik links
-ODOO_URL=hr.wizzfinancial.com
+ODOO_URL=#ODOO_URL#
 
 # Odoo version suffix is added to container names:
 ODOO_VER=16
@@ -28,8 +28,8 @@ ODOO_CONFIG=#CONFIG#
 # =====================================
 # Image name of Odoo (all tags are here: https://hub.docker.com/r/vmelnych/odoo/tags):
 # You can make your own builds here: https://github.com/vmelnych/odoo_docker_build
-ODOO_IMAGE=vmremote/odoo:16.20230110
-ODOO_WEB_PORT=80
+ODOO_IMAGE=vmremote/odoo:16.20230312
+ODOO_WEB_PORT=8080
 
 # =====================================
 # Odoo db user and password (is automatically set)
@@ -42,7 +42,7 @@ POSTGRES_USER=odoo
 PGADMIN_IMAGE=dpage/pgadmin4:latest
 PGADMIN_PASSWORD="#PGADMIN_PASSWORD#"
 PGADMIN_WEB_PORT=6015
-PGADMIN_URL=pga.wizzfinancial.com
+PGADMIN_URL=#PGADMIN_URL#
 
 ## PGAdmin login email (must be your email address):
 PGADMIN_EMAIL=odoo@pgadmin.email
@@ -50,9 +50,10 @@ PGADMIN_EMAIL=odoo@pgadmin.email
 # =====================================
 # Metabase environment by default is not started. Secret key is automatically set.
 MB_IMAGE=metabase/metabase
-MB_URL=bi.wizzfinancial.com
+MB_URL=#MB_URL#
 MB_WEB_PORT=8100
-#MB_DB_NAME=metabase
-#MB_DB_PORT=5432
-MB_JAVA_TIMEZONE=Europe/Berlin
+# MB_DB_NAME=metabase
+# MB_DB_PORT=5432
+# MB_JAVA_TIMEZONE=Europe/Berlin
+MB_JAVA_TIMEZONE=Asia/Dubai
 MB_ENCRYPTION_SECRET_KEY="#METABASE_SECRET#"

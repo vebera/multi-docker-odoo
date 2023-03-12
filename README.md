@@ -9,28 +9,25 @@ https://github.com/vmelnych/odoo_docker_build
 Tested on Ubuntu 21.04 (on WSL2) but must work on plain Ubuntu 18+ and with some bash script adjustments on other Linux distributions as well.
 
 ## Installation
-1. launch installation script with the name of your instance (e.g. `demo`):
+1. launch stack script with the name of your instance (e.g. `demo`):
 ```
-./scripts/install.sh demo
+./stack.sh -u demo
 ```
-2. Adjust your parameters in the created .env file (**instances/`demo`/.env**). Mind that web ports and container names (you can play with ODOO_VER variable) must be different for different environments.
+It you omit the instance name, the `default` name will be used.
+2. Adjust your parameters in the created .env file (**instances/`demo`/.env**). Mind that web ports and container names (you can play with ODOO_VER variable) must vary for different environments run simultaneously.
 3. Put your addons in the related folder in the **instances/`demo`/addons/** or point to another location.
-4. Launch your stack script **stack_`demo`.sh** (created automatically after you successfully performed all steps) without parameters to see the available options.
+4. Up your instance for plain vanilla Odoo:
 ```
-./stack_demo.sh
-```
-5. Up your instance for plain vanilla Odoo:
-```
-./stack_demo.sh -u
+./stack.sh -u demo
 ```
 
 If you need to launch pgAdmin alongside, specify it like that:
 ```
-./stack_demo.sh -u pgadmin
+./stack.sh -u demo pgadmin
 ```
-or like that if you also need a Metabase:
+or this way if you also need a Metabase:
 ```
-./stack_demo.sh -u pgadmin metabase
+./stack.sh -u demo pgadmin metabase
 ```
 
 Enjoy and let me know if you like it!

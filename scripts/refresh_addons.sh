@@ -8,11 +8,7 @@
 #set -o errtrace         # Make sure any error trap is inherited
 #set -o pipefail         # Use last non-zero exit code in a pipeline
 
-GRN='\033[0;32m'
-YEL='\033[1;33m'
-RED='\033[0;31m'
-BLU='\033[0;34m'
-NC='\033[0m'
+GRN='\033[0;32m' && YEL='\033[1;33m' && RED='\033[0;31m' && BLU='\033[0;34m' && NC='\033[0m'
 
 #folder where the current script is located
 declare folder="$(cd "$(dirname "$0")"; pwd -P)"

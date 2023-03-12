@@ -1,6 +1,5 @@
 addons/*
 addons.*
 instances/*
-odoo.conf
+.secrets/*
 .env
-stack_*.sh
