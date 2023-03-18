@@ -2,6 +2,9 @@
 ## docker-compose stack name (is automatically set):
 COMPOSE_PROJECT_NAME=#COMPOSE_PROJECT_NAME#
 
+# Server timezone:
+TZ=Asia/Dubai
+
 # ODOO traefik links
 ODOO_URL=#ODOO_URL#
 

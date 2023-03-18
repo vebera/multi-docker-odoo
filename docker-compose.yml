@@ -9,6 +9,8 @@ services:
     command: ${ODOO_COMMAND:-odoo}
     networks:
       - proxy
+    environment:
+      - TZ=${TZ}
     ports:
       - ${ODOO_WEB_PORT:-8069}:8069
     volumes:
