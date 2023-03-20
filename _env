@@ -34,6 +34,9 @@ ODOO_CONFIG=#CONFIG#
 ODOO_IMAGE=vmremote/odoo:16.20230312
 ODOO_WEB_PORT=8080
 
+# to protect */web/database/*, create basic auth paid:
+ODOO_BASIC_AUTH=
+
 # =====================================
 # Odoo db user and password (is automatically set)
 POSTGRES_IMAGE=postgres:13
