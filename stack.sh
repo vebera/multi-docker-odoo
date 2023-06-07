@@ -125,7 +125,7 @@ init() {
 
 main() {
     printf "\n Variables: \n"
-    printf "   instance : ${BLU}$COMPOSE_PROJECT_NAME${NC}. You can provide a new instance name as a parameter.\n"
+    printf "   instance : ${YEL}$COMPOSE_PROJECT_NAME${NC}. You can provide a new instance name as a parameter.\n"
     printf "        env : ${BLU}${env}${NC}\n"
     printf "Config file : ${BLU}$conf${NC}\n"
 
@@ -147,11 +147,13 @@ main() {
             ;;
         * ) 
             printf "\n \
-                    Usage:${BLU} ${0} ${GRN}[parameters]${NC}\n \
+                    Usage:${BLU} ${0} ${GRN}parameters${NC} ${YEL}[instance]${NC} ${GRN}[optional-parameters]${NC}\n \
                     ${GRN}--pull, -p${NC}\t\t Pull the repo from registry\n \
                     ${GRN}--up,-u${NC}\t\t Up the repo. ${GRN}pgadmin${NC} and ${GRN}metabase${NC} are optional parameters\n \
                     ${GRN}--down,-d${NC}\t\t Down the repo\n \
                     ${GRN}--restart,-r${NC}\t Cold-restart the repo\n \
+                    \n \
+                    Example:${BLU} ${0} ${GRN}-u${NC} ${YEL}demo${NC} ${GRN}pgadmin metabase${NC}\n \
                     "
             ;;
     esac
