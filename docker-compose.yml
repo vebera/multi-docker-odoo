@@ -27,7 +27,7 @@ services:
       traefik.http.routers.hr.service: hr
       traefik.http.services.hr.loadbalancer.server.port: ${ODOO_WEB_PORT}
 
-      traefik.http.routers.hr-admin.rule: Host(`${ODOO_URL}`) && PathPrefix(`/web/database`)
+      traefik.http.routers.hr-admin.rule: Host(`${ODOO_URL}`) && PathPrefix(`/web/database/manager`)
       traefik.http.routers.hr-admin.entrypoints: websecure
       traefik.http.routers.hr-admin.middlewares: odoo-auth
       traefik.http.routers.hr-admin.tls.certresolver: letsencrypt
