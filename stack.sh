@@ -58,48 +58,56 @@ createinstance() {
     conf=${thisinstance}'/config/odoo.conf'
 
     if [ ! -d "$thisinstance" ]; then
-        mkdir -p ${thisinstance}
-        mkdir -p ${thisinstance}'/addons'
-        mkdir -p ${thisinstance}'/config'
-        mkdir -p ${thisinstance}'/log'
+      read -p "Are you sure to create a new instance [$2]? (Y/N)" -n 1 -r
+      echo
+      if [[ $REPLY =~ ^[Yy]$ ]]
+      then
+          mkdir -p ${thisinstance}
+          mkdir -p ${thisinstance}'/addons'
+          mkdir -p ${thisinstance}'/config'
+          mkdir -p ${thisinstance}'/log'
 
-        # copying _env into the .env if not found:
-        printf "Creating .env file: ${YEL}${env}${NC}... Check it before you launch the stack.\n"
-        cp '_env' ${env}
-        sed -i "s|#COMPOSE_PROJECT_NAME#|$COMPOSE_PROJECT_NAME|g" ${env}
-        sed -i "s|#ADDONS#|$thisinstance/addons|g" ${env}
-        sed -i "s|#CONFIG#|$thisinstance/config|g" ${env}
-        sed -i "s|#LOG#|$thisinstance/log|g" ${env}
-        POSTGRES_PASSWORD=$(openssl rand -base64 14)
-        sed -i "s|#POSTGRES_PASSWORD#|$POSTGRES_PASSWORD|g" ${env}
-        sed -i "s|#PGADMIN_PASSWORD#|$(openssl rand -base64 14)|g" ${env}
-        sed -i "s|#METABASE_SECRET#|$(openssl rand -base64 14)|g" ${env}
-        read -p "Input your Odoo domain name (e.g. odoo.mydomain.com): " ODOO_URL
-        if [ -z $ODOO_URL ]; then
-            ODOO_URL="odoo.mydomain.com"
-        fi
-        read -p "Input your pgAdmin domain name (e.g. pga.mydomain.com): " PGADMIN_URL
-        if [ -z $PGADMIN_URL ]; then
-            PGADMIN_URL="pga.mydomain.com"
-        fi
-        read -p "Input your Metabase domain name (e.g. bi.mydomain.com): " MB_URL
-        if [ -z $MB_URL ]; then
-            MB_URL="bi.mydomain.com"
-        fi
-        sed -i "s|#ODOO_URL#|$ODOO_URL|g" ${env}
-        sed -i "s|#PGADMIN_URL#|$PGADMIN_URL|g" ${env}
-        sed -i "s|#MB_URL#|$MB_URL|g" ${env}
-        printf "\n$log Check the ${YEL}${env}${NC} and make sure all parameters are correct. \n"
-        source ${env}
+          # copying _env into the .env if not found:
+          printf "Creating .env file: ${YEL}${env}${NC}... Check it before you launch the stack.\n"
+          cp '_env' ${env}
+          sed -i "s|#COMPOSE_PROJECT_NAME#|$COMPOSE_PROJECT_NAME|g" ${env}
+          sed -i "s|#ADDONS#|$thisinstance/addons|g" ${env}
+          sed -i "s|#CONFIG#|$thisinstance/config|g" ${env}
+          sed -i "s|#LOG#|$thisinstance/log|g" ${env}
+          POSTGRES_PASSWORD=$(openssl rand -base64 14)
+          sed -i "s|#POSTGRES_PASSWORD#|$POSTGRES_PASSWORD|g" ${env}
+          sed -i "s|#PGADMIN_PASSWORD#|$(openssl rand -base64 14)|g" ${env}
+          sed -i "s|#METABASE_SECRET#|$(openssl rand -base64 14)|g" ${env}
+          read -p "Input your Odoo domain name (e.g. odoo.mydomain.com): " ODOO_URL
+          if [ -z $ODOO_URL ]; then
+              ODOO_URL="odoo.mydomain.com"
+          fi
+          read -p "Input your pgAdmin domain name (e.g. pga.mydomain.com): " PGADMIN_URL
+          if [ -z $PGADMIN_URL ]; then
+              PGADMIN_URL="pga.mydomain.com"
+          fi
+          read -p "Input your Metabase domain name (e.g. bi.mydomain.com): " MB_URL
+          if [ -z $MB_URL ]; then
+              MB_URL="bi.mydomain.com"
+          fi
+          sed -i "s|#ODOO_URL#|$ODOO_URL|g" ${env}
+          sed -i "s|#PGADMIN_URL#|$PGADMIN_URL|g" ${env}
+          sed -i "s|#MB_URL#|$MB_URL|g" ${env}
+          printf "\n$log Check the ${YEL}${env}${NC} and make sure all parameters are correct. \n"
+          source ${env}
 
-        # copying conf.odoo into the new folder if not found:
-        printf "$log Creating config file: ${YEL}${conf}${NC}... Check it before you launch the stack.\n"
-        cp 'odoo.conf' ${conf}
-        sed -i "s|#POSTGRES_PASSWORD#|$POSTGRES_PASSWORD|g" ${conf}
-        sed -i "s|#POSTGRES_USER#|$POSTGRES_USER|g" ${conf}
-        sed -i "s|#ODOO_VER#|$ODOO_VER|g" ${conf}
+          # copying conf.odoo into the new folder if not found:
+          printf "$log Creating config file: ${YEL}${conf}${NC}... Check it before you launch the stack.\n"
+          cp 'odoo.conf' ${conf}
+          sed -i "s|#POSTGRES_PASSWORD#|$POSTGRES_PASSWORD|g" ${conf}
+          sed -i "s|#POSTGRES_USER#|$POSTGRES_USER|g" ${conf}
+          sed -i "s|#ODOO_VER#|$ODOO_VER|g" ${conf}
 
-        printf "$log ${GRN}An odoo instance has been created in ${BLU}$thisinstance${NC} \n"
+          printf "$log ${GRN}An odoo instance has been created in ${BLU}$thisinstance${NC} \n"
+      else
+          printf "$log Aborted. \n"
+          exit 1
+      fi
     fi
 }
 
@@ -124,32 +132,35 @@ init() {
 
 
 main() {
-    printf "\n Variables: \n"
-    printf "   instance : ${YEL}$COMPOSE_PROJECT_NAME${NC}. You can provide a new instance name as a parameter.\n"
-    printf "        env : ${BLU}${env}${NC}\n"
-    printf "Config file : ${BLU}$conf${NC}\n"
+    printf "\n   Variables : \n"
+    printf "      instance : ${YEL}$COMPOSE_PROJECT_NAME${NC}. You can provide a new instance name as a parameter.\n"
+    printf "  compose file : ${BLU}$COMPOSE_FILE${NC}\n"
+    printf "           env : ${BLU}${env}${NC}\n"
+    printf "   config file : ${BLU}$conf${NC}\n"
+    printf " all instances : "
+    for i in $(ls -d ${instances}/*/); do printf "${BLU}${i%%/}${NC}\n                "; done
 
     case "${1}" in
         --pull | -p )
             docker image prune -a --force --filter "until=72h"
-            docker-compose --env-file ${env} pull "${@:3}"
+            docker-compose --env-file ${env} -f ${COMPOSE_FILE} pull "${@:3}"
             ;;
         --up | -u )
-            printf "${GRN}docker-compose --env-file ${env} up -d "${@:3}"${NC} \n"
-            docker-compose --env-file ${env} up -d "${@:3}"
+            printf "${GRN}docker-compose --env-file ${env} -f ${COMPOSE_FILE} up -d "${@:3}"${NC} \n"
+            docker-compose --env-file ${env} -f ${COMPOSE_FILE} up -d "${@:3}"
             ;;
         --down | -d )
-            docker-compose --env-file ${env} down
+            docker-compose --env-file ${env} -f ${COMPOSE_FILE} down
             ;;
         --restart | -r )
-            docker-compose --env-file ${env} down
-            docker-compose --env-file ${env} up -d "${@:3}"
+            docker-compose --env-file ${env} -f ${COMPOSE_FILE} down
+            docker-compose --env-file ${env} -f ${COMPOSE_FILE} up -d "${@:3}"
             ;;
         * ) 
             printf "\n \
-                    Usage:${BLU} ${0} ${GRN}parameters${NC} ${YEL}[instance]${NC} ${GRN}[optional-parameters]${NC}\n \
+                    Usage:${BLU} ${0} ${GRN}parameters${NC} ${YEL}[instance${NC} ${GRN}[optional-parameters]${YEL}]${NC}\n \
                     ${GRN}--pull, -p${NC}\t\t Pull the repo from registry\n \
-                    ${GRN}--up,-u${NC}\t\t Up the repo. ${GRN}pgadmin${NC} and ${GRN}metabase${NC} are optional parameters\n \
+                    ${GRN}--up,-u${NC}\t\t Up the repo. ${GRN}pgadmin${NC} and ${GRN}metabase${NC} are optional. Metabase db must be created manually!\n \
                     ${GRN}--down,-d${NC}\t\t Down the repo\n \
                     ${GRN}--restart,-r${NC}\t Cold-restart the repo\n \
                     \n \

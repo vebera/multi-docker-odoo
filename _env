@@ -1,4 +1,8 @@
 # Environment variables for the app on Odoo server
+## which docker-compose file to take:
+# COMPOSE_FILE=docker-compose.yml
+COMPOSE_FILE=docker-compose-local.yml
+
 ## docker-compose stack name (is automatically set):
 COMPOSE_PROJECT_NAME=#COMPOSE_PROJECT_NAME#
 

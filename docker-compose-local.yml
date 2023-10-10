@@ -1,4 +1,4 @@
-# production (traefik) version
+# local version
 version: '3.9'
 services:
   odoo:
@@ -19,23 +19,6 @@ services:
       - ${ODOO_CONFIG:-./instances/default/config}:/etc/odoo
       - ${ODOO_ADDONS:-./instances/default/addons}:/mnt/extra-addons
       - ${ODOO_LOG:-./instances/default/log}:/var/log/odoo
-    labels:
-      traefik.enable: true
-      traefik.docker.network: proxy
-      traefik.http.routers.hr.entrypoints: websecure
-      traefik.http.routers.hr.rule: Host(`${ODOO_URL}`)
-      traefik.http.routers.hr.tls.certresolver: letsencrypt
-      traefik.http.routers.hr.service: hr
-      traefik.http.services.hr.loadbalancer.server.port: ${ODOO_WEB_PORT}
-
-      traefik.http.routers.hr-admin.rule: Host(`${ODOO_URL}`) && PathPrefix(`/web/database/manager`)
-      traefik.http.routers.hr-admin.entrypoints: websecure
-      traefik.http.routers.hr-admin.middlewares: odoo-auth
-      traefik.http.routers.hr-admin.tls.certresolver: letsencrypt
-      traefik.http.routers.hr-admin.service: hr-admin
-      traefik.http.services.hr-admin.loadbalancer.server.port: ${ODOO_WEB_PORT}
-
-      traefik.http.middlewares.odoo-auth.basicauth.users: ${ODOO_BASIC_AUTH}
   db:
     image: ${POSTGRES_IMAGE}
     container_name: db_odoo${ODOO_VER}
@@ -51,8 +34,8 @@ services:
       - odoo-db-data:/var/lib/postgresql/data/pgdata
     networks:
       - proxy
-    #ports:
-    #  - 5432:5432
+    ports:
+      - 5432:5432
 
   pgadmin:
     image: ${PGADMIN_IMAGE}
