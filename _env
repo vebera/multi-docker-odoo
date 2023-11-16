@@ -29,8 +29,8 @@ ODOO_CONFIG=#CONFIG#
 
 # =====================================
 # Odoo command line parameters (may be required for maintenance works):
-#ODOO_COMMAND=odoo -d <dbname> --update all --stop-after-init --load=base,web,openupgrade_framework
-#ODOO_COMMAND=odoo -d demo -u all
+#ODOO_COMMAND="odoo -d <dbname> --update all --stop-after-init --load=base,web,openupgrade_framework"
+#ODOO_COMMAND="odoo -d demo -u all"
 
 # =====================================
 # Image name of Odoo (all tags are here: https://hub.docker.com/r/vmelnych/odoo/tags):
