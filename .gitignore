@@ -1,5 +1,6 @@
+.vscode
+.docker
+.secrets
 addons/*
-addons.*
 instances/*
-.secrets/*
 .env

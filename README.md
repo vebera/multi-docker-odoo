@@ -31,4 +31,4 @@ or this way if you also need a Metabase:
 ```
 
 Enjoy and let me know if you like it!
-Vasyl (vasyl@wizzfinancial.com)
+vebera.tech@gmail.com
