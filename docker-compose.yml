@@ -22,18 +22,18 @@ services:
     labels:
       traefik.enable: true
       traefik.docker.network: proxy
-      traefik.http.routers.hr.entrypoints: websecure
-      traefik.http.routers.hr.rule: Host(`${ODOO_URL}`)
-      traefik.http.routers.hr.tls.certresolver: letsencrypt
-      traefik.http.routers.hr.service: hr
-      traefik.http.services.hr.loadbalancer.server.port: ${ODOO_WEB_PORT}
+      traefik.http.routers.odoo.entrypoints: websecure
+      traefik.http.routers.odoo.rule: Host(`${ODOO_URL}`)
+      traefik.http.routers.odoo.tls.certresolver: letsencrypt
+      traefik.http.routers.odoo.service: odoo
+      traefik.http.services.odoo.loadbalancer.server.port: ${ODOO_WEB_PORT}
 
-      traefik.http.routers.hr-admin.rule: Host(`${ODOO_URL}`) && PathPrefix(`/web/database`)
-      traefik.http.routers.hr-admin.entrypoints: websecure
-      traefik.http.routers.hr-admin.middlewares: odoo-auth
-      traefik.http.routers.hr-admin.tls.certresolver: letsencrypt
-      traefik.http.routers.hr-admin.service: hr-admin
-      traefik.http.services.hr-admin.loadbalancer.server.port: ${ODOO_WEB_PORT}
+      traefik.http.routers.odoo-admin.rule: Host(`${ODOO_URL}`) && PathPrefix(`/web/database`)
+      traefik.http.routers.odoo-admin.entrypoints: websecure
+      traefik.http.routers.odoo-admin.middlewares: odoo-auth
+      traefik.http.routers.odoo-admin.tls.certresolver: letsencrypt
+      traefik.http.routers.odoo-admin.service: odoo-admin
+      traefik.http.services.odoo-admin.loadbalancer.server.port: ${ODOO_WEB_PORT}
 
       traefik.http.middlewares.odoo-auth.basicauth.users: ${ODOO_BASIC_AUTH}
   db:

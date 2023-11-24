@@ -29,7 +29,7 @@ ODOO_CONFIG=#CONFIG#
 
 # =====================================
 # Odoo command line parameters (may be required for maintenance works):
-#ODOO_COMMAND="odoo -d <dbname> --update all --stop-after-init --load=base,web,openupgrade_framework"
+#ODOO_COMMAND="odoo -d your_db_name --update all --stop-after-init --load=base,web,openupgrade_framework"
 #ODOO_COMMAND="odoo -d demo -u all"
 
 # =====================================
