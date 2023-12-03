@@ -101,7 +101,7 @@ createinstance() {
           cp 'odoo.conf' ${conf}
           sed -i "s|#POSTGRES_PASSWORD#|$POSTGRES_PASSWORD|g" ${conf}
           sed -i "s|#POSTGRES_USER#|$POSTGRES_USER|g" ${conf}
-          sed -i "s|#ODOO_VER#|$ODOO_VER|g" ${conf}
+          sed -i "s|#COMPOSE_PROJECT_NAME#|$COMPOSE_PROJECT_NAME|g" ${conf}
 
           printf "$log ${GRN}An odoo instance has been created in ${BLU}$thisinstance${NC} \n"
       else

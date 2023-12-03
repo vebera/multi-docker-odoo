@@ -13,13 +13,15 @@ TZ=Asia/Dubai
 ODOO_URL=#ODOO_URL#
 
 # Odoo version suffix is added to container names:
-ODOO_VER=16
+ODOO_VER=17
 
 # =====================================
 # Folders:
 
 # Full path where all odoo addons are stored (is automatically set):
 ODOO_ADDONS=#ADDONS#
+# Full path where additional odoo addons are stored (is automatically set):
+ODOO_ADDONS_CUSTOM=#ADDONS#
 
 # Full path where odoo logs should be stored (is automatically set):
 ODOO_LOG=#LOG#
@@ -35,7 +37,7 @@ ODOO_CONFIG=#CONFIG#
 # =====================================
 # Image name of Odoo (all tags are here: https://hub.docker.com/r/vmelnych/odoo/tags):
 # You can make your own builds here: https://github.com/vmelnych/odoo_docker_build
-ODOO_IMAGE=vmremote/odoo:16.20230312
+ODOO_IMAGE=vmremote/odoo:17.20231201
 ODOO_WEB_PORT=8080
 
 # to protect */web/database/*, create basic auth paid:
@@ -51,7 +53,7 @@ POSTGRES_USER=odoo
 # PGAdmin is not started by default. The password is automatically set.
 PGADMIN_IMAGE=dpage/pgadmin4:latest
 PGADMIN_PASSWORD="#PGADMIN_PASSWORD#"
-PGADMIN_WEB_PORT=6015
+PGADMIN_WEB_PORT=6017
 PGADMIN_URL=#PGADMIN_URL#
 
 ## PGAdmin login email (must be your email address):

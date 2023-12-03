@@ -3,7 +3,7 @@ version: '3.9'
 services:
   odoo:
     image: ${ODOO_IMAGE}
-    container_name: odoo${ODOO_VER}
+    container_name: odoo_${COMPOSE_PROJECT_NAME}
     restart: always
     depends_on:
       - db
@@ -18,10 +18,11 @@ services:
       - odoo-web-data:/var/lib/odoo
       - ${ODOO_CONFIG:-./instances/default/config}:/etc/odoo
       - ${ODOO_ADDONS:-./instances/default/addons}:/mnt/extra-addons
+      - ${ODOO_ADDONS_CUSTOM:-./instances/default/addons_custom}:/mnt/custom-addons
       - ${ODOO_LOG:-./instances/default/log}:/var/log/odoo
   db:
     image: ${POSTGRES_IMAGE}
-    container_name: db_odoo${ODOO_VER}
+    container_name: db_${COMPOSE_PROJECT_NAME}
     restart: always
     environment:
       - POSTGRES_DB=postgres
@@ -39,20 +40,13 @@ services:
 
   pgadmin:
     image: ${PGADMIN_IMAGE}
-    container_name: pga${ODOO_VER}
+    container_name: pga_${COMPOSE_PROJECT_NAME}
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     volumes:
       - pgadmin-data:/var/lib/pgadmin
-    labels:
-      traefik.enable: true
-      traefik.docker.network: proxy
-      traefik.http.routers.hr.entrypoints: websecure
-      traefik.http.routers.hr.rule: Host(`${PGADMIN_URL}`)
-      traefik.http.routers.hr.tls.certresolver: letsencrypt
-      traefik.http.services.hr.loadbalancer.server.port: ${PGADMIN_WEB_PORT}
     networks:
       - proxy
     ports:
@@ -65,7 +59,7 @@ services:
 
   metabase:
     image: ${MB_IMAGE}
-    container_name: metabase${ODOO_VER}
+    container_name: bi_${COMPOSE_PROJECT_NAME}
     restart: unless-stopped
     environment:
       MB_DB_TYPE: postgres
@@ -76,13 +70,6 @@ services:
       MB_DB_PASS: ${POSTGRES_PASSWORD}
       MB_ENCRYPTION_SECRET_KEY: '$MB_ENCRYPTION_SECRET_KEY'
       JAVA_TIMEZONE: '$MB_JAVA_TIMEZONE'
-    labels:
-      traefik.enable: true
-      traefik.docker.network: proxy
-      traefik.http.routers.hr.entrypoints: websecure
-      traefik.http.routers.hr.rule: Host(`${MB_URL}`)
-      traefik.http.routers.hr.tls.certresolver: letsencrypt
-      traefik.http.services.hr.loadbalancer.server.port: ${MB_WEB_PORT}
     networks:
       - proxy
     ports:
