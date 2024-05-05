@@ -37,7 +37,7 @@ ODOO_CONFIG=#CONFIG#
 # =====================================
 # Image name of Odoo (all tags are here: https://hub.docker.com/r/vmelnych/odoo/tags):
 # You can make your own builds here: https://github.com/vmelnych/odoo_docker_build
-ODOO_IMAGE=vmremote/odoo:17.20231201
+ODOO_IMAGE=vmremote/odoo:17.20240419
 ODOO_WEB_PORT=8080
 
 # to protect */web/database/*, create basic auth paid:
@@ -45,7 +45,7 @@ ODOO_BASIC_AUTH=
 
 # =====================================
 # Odoo db user and password (is automatically set)
-POSTGRES_IMAGE=postgres:16
+POSTGRES_IMAGE=docker.io/library/postgres:16-alpine
 POSTGRES_PASSWORD="#POSTGRES_PASSWORD#"
 POSTGRES_USER=odoo
 

@@ -1,0 +1,90 @@
+# version for traefik 3.0
+version: '3.9'
+services:
+  odoo:
+    image: ${ODOO_IMAGE}
+    container_name: odoo_${COMPOSE_PROJECT_NAME}
+    restart: always
+    labels:
+      - traefik.http.routers.odoo.rule=Host(`${ODOO_URL}`)
+    depends_on:
+      - db
+    command: ${ODOO_COMMAND:-odoo}
+    networks:
+      - proxy
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ${ODOO_CONFIG:-./instances/default/config}:/etc/odoo
+      - ${ODOO_ADDONS:-./instances/default/addons}:/mnt/extra-addons
+      - ${ODOO_ADDONS_CUSTOM:-./instances/default/addons_custom}:/mnt/custom-addons
+      - ${ODOO_LOG:-./instances/default/log}:/var/log/odoo
+  db:
+    image: ${POSTGRES_IMAGE}
+    container_name: db_${COMPOSE_PROJECT_NAME}
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - FETCH_OCA_DEPENDENCIES=True
+      - METABASE_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+    networks:
+      - proxy
+    ports:
+      - 5432:5432
+
+  pgadmin:
+    image: ${PGADMIN_IMAGE}
+    container_name: pga_${COMPOSE_PROJECT_NAME}
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - proxy
+    ports:
+      - ${PGADMIN_WEB_PORT}:80
+    profiles:
+      - pgadmin
+    depends_on:
+      - odoo
+      - db
+
+  metabase:
+    image: ${MB_IMAGE}
+    container_name: bi_${COMPOSE_PROJECT_NAME}
+    restart: unless-stopped
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: ${MB_DB_NAME:-metabase}
+      MB_DB_PORT: ${MB_DB_PORT:-5432}
+      MB_DB_USER: $POSTGRES_USER
+      MB_DB_HOST: db_odoo$ODOO_VER
+      MB_DB_PASS: ${POSTGRES_PASSWORD}
+      MB_ENCRYPTION_SECRET_KEY: '$MB_ENCRYPTION_SECRET_KEY'
+      JAVA_TIMEZONE: '$MB_JAVA_TIMEZONE'
+    networks:
+      - proxy
+    ports:
+      - '${MB_WEB_PORT}:3000'
+    profiles:
+      - metabase
+    depends_on:
+      - odoo
+      - db
+
+volumes:
+  odoo-web-data:
+  pgadmin-data:
+  odoo-db-data:
+
+networks:
+  proxy:
+    external: true
