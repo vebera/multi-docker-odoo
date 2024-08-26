@@ -1,5 +1,4 @@
 # production (traefik) version
-version: '3.9'
 services:
   odoo:
     image: ${ODOO_IMAGE}

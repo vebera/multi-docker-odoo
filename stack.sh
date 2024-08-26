@@ -8,6 +8,7 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 
 GRN='\033[0;32m' && YEL='\033[1;33m' && RED='\033[0;31m' && BLU='\033[0;34m' && NC='\033[0m'
 
+declare compose_cl="docker compose"
 #folder where the current script is located
 declare HOME="$(cd "$(dirname "$0")"; pwd -P)"
 #declare env=".env"
@@ -19,10 +20,6 @@ declare postgresecret=./.secrets/postgre-admin-password
 checkdocker() {
   if [[ ! -x "$(command -v docker)" ]]; then
     printf "\ninit(): You must install ${RED}docker${NC} on your machine. Aborted. \n"
-    exit 1
-  fi
-  if [[ ! -x "$(command -v docker-compose)" ]]; then
-    printf "\ninit(): You must install ${RED}docker-compose${NC} on your machine. Aborted. \n"
     exit 1
   fi
 }
@@ -37,10 +34,15 @@ createnet() {
 createsecrets() {
   if [ ! -d ".secrets" ]; then
     mkdir -p ".secrets"
-    portpass=$(openssl rand -base64 12)
+    portpass=$(genkey)
     echo "$portpass" >> $postgresecret
     printf "\ncreatesecrets(): Postgres secret has been created in ${YEL}$postgresecret${NC}.\n"
   fi
+}
+
+genkey() {
+  local length=${1:-16}  # Default to 16 if no parameter is provided
+  openssl rand -base64 $length | tr -dc 'a-zA-Z0-9' | fold -w $length | head -n 1
 }
 
 createinstance() {
@@ -69,15 +71,15 @@ createinstance() {
 
           # copying _env into the .env if not found:
           printf "Creating .env file: ${YEL}${env}${NC}... Check it before you launch the stack.\n"
-          cp '_env' ${env}
-          sed -i "s|#COMPOSE_PROJECT_NAME#|$COMPOSE_PROJECT_NAME|g" ${env}
-          sed -i "s|#ADDONS#|$thisinstance/addons|g" ${env}
-          sed -i "s|#CONFIG#|$thisinstance/config|g" ${env}
-          sed -i "s|#LOG#|$thisinstance/log|g" ${env}
-          POSTGRES_PASSWORD=$(openssl rand -base64 14)
-          sed -i "s|#POSTGRES_PASSWORD#|$POSTGRES_PASSWORD|g" ${env}
-          sed -i "s|#PGADMIN_PASSWORD#|$(openssl rand -base64 14)|g" ${env}
-          sed -i "s|#METABASE_SECRET#|$(openssl rand -base64 14)|g" ${env}
+          cp '.env.sample' ${env}
+          sed -i "s|{COMPOSE_PROJECT_NAME}|$COMPOSE_PROJECT_NAME|g" ${env}
+          sed -i "s|{ADDONS}|$thisinstance/addons|g" ${env}
+          sed -i "s|{CONFIG}|$thisinstance/config|g" ${env}
+          sed -i "s|{LOG}|$thisinstance/log|g" ${env}
+          POSTGRES_PASSWORD=$(genkey)
+          sed -i "s|{POSTGRES_PASSWORD}|$POSTGRES_PASSWORD|g" ${env}
+          sed -i "s|{PGADMIN_PASSWORD}|$(genkey)|g" ${env}
+          sed -i "s|{METABASE_SECRET}|$(genkey)|g" ${env}
           read -p "Input your Odoo domain name (e.g. odoo.mydomain.com): " ODOO_URL
           if [ -z $ODOO_URL ]; then
               ODOO_URL="odoo.mydomain.com"
@@ -90,18 +92,18 @@ createinstance() {
           if [ -z $MB_URL ]; then
               MB_URL="bi.mydomain.com"
           fi
-          sed -i "s|#ODOO_URL#|$ODOO_URL|g" ${env}
-          sed -i "s|#PGADMIN_URL#|$PGADMIN_URL|g" ${env}
-          sed -i "s|#MB_URL#|$MB_URL|g" ${env}
+          sed -i "s|{ODOO_URL}|$ODOO_URL|g" ${env}
+          sed -i "s|{PGADMIN_URL}|$PGADMIN_URL|g" ${env}
+          sed -i "s|{MB_URL}|$MB_URL|g" ${env}
           printf "\n$log Check the ${YEL}${env}${NC} and make sure all parameters are correct. \n"
           source ${env}
 
           # copying conf.odoo into the new folder if not found:
           printf "$log Creating config file: ${YEL}${conf}${NC}... Check it before you launch the stack.\n"
           cp 'odoo.conf' ${conf}
-          sed -i "s|#POSTGRES_PASSWORD#|$POSTGRES_PASSWORD|g" ${conf}
-          sed -i "s|#POSTGRES_USER#|$POSTGRES_USER|g" ${conf}
-          sed -i "s|#COMPOSE_PROJECT_NAME#|$COMPOSE_PROJECT_NAME|g" ${conf}
+          sed -i "s|{POSTGRES_PASSWORD}|$POSTGRES_PASSWORD|g" ${conf}
+          sed -i "s|{POSTGRES_USER}|$POSTGRES_USER|g" ${conf}
+          sed -i "s|{COMPOSE_PROJECT_NAME}|$COMPOSE_PROJECT_NAME|g" ${conf}
 
           printf "$log ${GRN}An odoo instance has been created in ${BLU}$thisinstance${NC} \n"
       else
@@ -143,18 +145,18 @@ main() {
     case "${1}" in
         --pull | -p )
             docker image prune -a --force --filter "until=72h"
-            docker-compose --env-file ${env} -f ${COMPOSE_FILE} pull "${@:3}"
+            ${compose_cl} --env-file ${env} -f ${COMPOSE_FILE} pull "${@:3}"
             ;;
         --up | -u )
             printf "${GRN}docker-compose --env-file ${env} -f ${COMPOSE_FILE} up -d "${@:3}"${NC} \n"
-            docker-compose --env-file ${env} -f ${COMPOSE_FILE} up -d "${@:3}"
+            ${compose_cl} --env-file ${env} -f ${COMPOSE_FILE} up -d "${@:3}"
             ;;
         --down | -d )
-            docker-compose --env-file ${env} -f ${COMPOSE_FILE} down
+            ${compose_cl} --env-file ${env} -f ${COMPOSE_FILE} down
             ;;
         --restart | -r )
-            docker-compose --env-file ${env} -f ${COMPOSE_FILE} down
-            docker-compose --env-file ${env} -f ${COMPOSE_FILE} up -d "${@:3}"
+            ${compose_cl} --env-file ${env} -f ${COMPOSE_FILE} down
+            ${compose_cl} --env-file ${env} -f ${COMPOSE_FILE} up -d "${@:3}"
             ;;
         * ) 
             printf "\n \
